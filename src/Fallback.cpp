@@ -1,36 +1,26 @@
 #include <Geode/modify/CCSprite.hpp>
 #include <Geode/modify/CCSpriteFrameCache.hpp>
-
+#include "gdfiles.hpp"
 using namespace geode::prelude;
 void assignFallbackObj(CCNode* node) {
     if (!node) return;
     node->setUserObject("fallback"_spr, CCBool::create(true));
 }
 CCSpriteFrame* fallbackFrame(const char* name) {
-    const char * modpath = ""_spr;
-    const char * layout = fmt::format("Geode_{}",name).c_str();
-    auto* sprite = CCSprite::create(layout); 
-    CCSpriteFrame* frame = nullptr;
-    if (sprite == nullptr){
-            const char * layout = fmt::format("{}{}",modpath,name).c_str();
-            auto* sprite = CCSprite::create(layout);
-            if (sprite) {
-                auto* img = CCTextureCache::get()->addImage(layout,true); // fixes it by Caching it
-                frame =  CCSpriteFrame::create(layout, {ccp(0, 0),sprite->getContentSize()});
-            }
-            if (frame == nullptr) {
-                frame = CCSpriteFrame::create("fallback.png"_spr, {ccp(0, 0), ccp(128, 128)});
-            }
-    } else {
+        std::filesystem::path gdpath = getGDResourcesPath();
+        // check if the file is in the gd path, read the plist for if it has a offset and or flipped and place it
+         // frame =  CCSpriteFrame::create(layout, {ccp(0, 0),sprite->getContentSize()}); - old
+         CCSpriteFrameCache::get()->addSpriteFramesWithFile(gdpath / )
+        if (frame == nullptr) {
+            frame = CCSpriteFrame::create("fallback.png"_spr, {ccp(0, 0), ccp(128, 128)});
+        }
+     else {
          frame =  CCSpriteFrame::create(layout, {ccp(0, 0),sprite->getContentSize()});
     }
+
     return frame;
 }
 CCSprite* fallback(auto name) {
-    const char * modpath = ""_spr;
-    const char * layout = fmt::format("Geode_{}",name).c_str();
-    auto* sprite = CCSprite::create(layout);
-    if (sprite == nullptr) {
         const char * layout = fmt::format("{}{}",modpath,name).c_str();
         auto* sprite = CCSprite::create(layout);
         if (sprite == nullptr) {
@@ -40,7 +30,6 @@ CCSprite* fallback(auto name) {
             }
             assignFallbackObj(sprite);
         }
-    }
     return sprite;
 };
 
